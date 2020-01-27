@@ -1,0 +1,608 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <title>Poor devops' guide to enlightenment | Cloud Native Inception Meetup, Lille, Jan. 28 2020</title>
+    <meta name="author" content="Régis Behmo">
+
+    <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/fontawesome.min.css">
+    <link rel="stylesheet" href="css/theme/night.css">
+    <link rel="stylesheet" href="css/custom.css">
+
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/monokai.css">
+
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+
+    <style>
+        body {
+            background-color: #313131;
+        }
+
+        .reveal h1,
+        .reveal h2,
+        .reveal h3,
+        .reveal h4,
+        .reveal h5,
+        .reveal h6 {
+            color: #ffa443;
+        }
+
+        .reveal .nocolor {
+            color: #eee;
+        }
+
+        .text-center, .reveal ul.text-center li {
+            text-align: center;
+        }
+        table.text-center {
+            border: 1px solid #fff;
+        }
+
+        table.text-center td,
+        table.text-center th {
+            text-align: center;
+            border-right: solid 1px #fff;
+            border-left: solid 1px #fff;
+        }
+
+        table.text-center td {
+            border-bottom: none;
+        }
+        .reveal table.no-border td {
+            border: none;
+        }
+
+        .smallish {
+            font-size: 80%;
+        }
+        
+        .small {
+            font-size: 60%;
+        }
+
+        .verysmall {
+            font-size: 40%;
+        }
+
+        .discrete {
+            opacity: 0.2;
+        }
+
+        i {
+            font-style: italic;
+        }
+
+        .strikethrough {
+            text-decoration: line-through;
+        }
+
+        .half-width {
+            width: 50%;
+        }
+        div.half-width {
+            float: left;
+            display: block;
+        }
+
+        .reveal ul.no-bullets {
+            list-style-type: none;
+        }
+        .reveal ul.fa-ul {
+            list-style-type: none;
+        }
+
+        .fa-check {
+            color: #35c635;
+        }
+        .fa-times {
+            color: #ec4141;
+        }
+        .fa-exclamation-triangle {
+            color: #f5b520;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="reveal">
+        <div class="slides">
+
+            <section data-background="img/enlightenment.jpg" data-background-opacity="0.3">
+                <h2>Poor devops' guide to enlightenment</h2>
+                <h4 class="nocolor">(Guide de l'éveil spirituel à destination des devops nécessiteux)</h4>
+                <p>
+                    <a href="https://minutebutterfly.com">Régis Behmo</a>
+                    <a href="https://github.com/regisb"><i class="fab fa-github"></i></a>
+                    <a href="https://stackoverflow.com/users/356528/r%c3%a9gis-b?tab=profile"><i class="fab fa-stack-overflow"></i></a>
+                    @regisb<br>
+                </p>
+                <p>Cloud Native Inception Meetup, Lille, Jan. 28 2020</p>
+                <p>Slides: <a href="https://regisb.github.io/cncf2020">https://regisb.github.io/cncf2020</a></p>
+                <p><a rel="license" href="http://creativecommons.org/licenses/by-sa/4.0/"><img alt="Licence Creative Commons" style="border-width:0" src="img/creativecommons.png" /></a></p>
+            </section>
+
+            <section>
+                <h4>Régis Behmo, fullstack freelance developer</h4>
+                <img src="img/scholar.png">
+                <table style="font-size: 60%;" class="text-center">
+                    <tr>
+                        <th>Stats</th>
+                        <th>Special skills</th>
+                    </tr>
+                    <tr>
+                        <td>Frontend dev: 25/100</td>
+                        <td>Python</td>
+                    </tr>
+                    <tr>
+                        <td>Backend dev: 90/100</td>
+                        <td>Data science & Data engineering</td>
+                    </tr>
+                    <tr>
+                        <td>Devops/Sysadmin: 70/100</td>
+                        <td>Online/Offline learning/teaching<br>(<a href="https://openclassrooms.com">Openclassrooms</a>, <a href="https://www.centralesupelec.fr/">CentraleSupelec</a>)</td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                        <td>Open source & Public services enthusiast <br>
+                            (<a href="https://openedx.org">Open edX</a>, <a href="https://fun-mooc.fr">FUN-MOOC</a>, <a href="https://labonneboite.pole-emploi.fr/">Pôle emploi</a>)</td>
+                    </tr>
+                </table>
+                <p class="verysmall">PS: play <a href="https://playorna.com/">Orna</a>!</p>
+            </section>
+            <section data-background="img/tutor.png" data-background-size="contain" data-background-opacity="0.3">
+                <p>Tutor: docker-based Open edX distribution</p>
+                <p><a href="https://docs.tutor.overhang.io">https://docs.tutor.overhang.io</a></p>
+            </section>
+            <section data-background="img/05.jpg" data-background-opacity="0.7">
+                <p>❤️ Hautes-Alpes</p>
+            </section>
+            <section></section>
+            
+            <section>
+                <h3>Software deployment</h3>
+                <ul class="fragment">
+                    <li>Installation</li>
+                    <li>Upgrade</li>
+                    <li>Debugging</li>
+                    <li>Error management</li>
+                    <li>Logging</li>
+                    <li>Backups</li>
+                    <li>Resiliency</li>
+                    <li>...</li>
+            </section>
+            <section>
+                <h3>Software development</h3>
+                <ul class="fragment">
+                    <li>Feature engineering</li>
+                    <li>Bug fixing</li>
+                    <li>Code refactoring</li>
+            </section>
+            <section>
+                <p>Deployment ≠ Development</p>
+            </section>
+            <section>
+                <p><u>Deployment</u> ≠ Development</p>
+            </section>
+
+            <!-- Unpopular opinions -->
+            <section>
+                <h4>Unpopular opinions</h4>
+                <ol>
+                    <li class="fragment">Good deployments are more important than good code</li>
+                    <li class="fragment">Most developers are terrible at devops (and need to improve)</li>
+                    <li class="fragment">Docker and Kubernetes are not for everyone</li>
+                </ol>
+            </section>
+            <section>
+                <h4>Unpopular opinions</h4>
+                <ol>
+                    <li>Good deployments are more important than good code</li>
+                    <li class="discrete">Most developers are terrible at devops (and need to improve)</li>
+                    <li class="discrete">Docker and Kubernetes are not for everyone</li>
+                </ol>
+            </section>
+
+            <!-- Good deployments are more important than good code -->
+            <section>
+                <h4>Good deployments are more important than good code</h4>
+                <p class="fragment">Reliable deployments are a <i>sine qua non</i> of agile teams</p>
+                <p class="fragment">(reliable == repeatable, approachable, fast)</p>
+            </section>
+            <section>
+                <h4>Good deployments are more important than good code</h4>
+                <p class="rainbow">Reliable deployments are a <i>sine qua non</i> of agile teams</p>
+                <p>(reliable == repeatable, approachable, fast)</p>
+            </section>
+            <section>
+                <h4>Good deployments are more important than good code</h4>
+                <p>Agile teams need:</p>
+                <ul>
+                    <li>Rapid iterations</li>
+                    <li>Responding to change</li>
+                    <li>Speed of execution</li>
+                </ul>
+                <p><a href="https://agilemanifesto.org/">https://agilemanifesto.org/</a></p>
+            </section>
+            <section>
+                <h4>Good deployments are more important than good code</h4>
+                <table class="text-center">
+                    <tr>
+                        <th class="half-width">Easy</th>
+                        <th class="half-width">Hard</th>
+                    </tr>
+                    <tr>
+                        <td class="fragment">Debug code</td>
+                        <td class="fragment">Debug infrastructure</td>
+                    </tr>
+                    <tr>
+                        <td class="fragment">Replace library</td>
+                        <td class="fragment">Replace database</td>
+                    </tr>
+                    <tr>
+                        <td class="fragment">Refactor code</td>
+                        <td class="fragment">Change database schema</td>
+                    </tr>
+                </table>
+            </section>
+
+            <!-- Most developers are terrible at devops (and need to improve) -->
+            <section>
+                <h4>Unpopular opinions</h4>
+                <ol>
+                    <li class="discrete">Good deployments are more important than good code</li>
+                    <li>Most developers are terrible at devops (and need to improve)</li>
+                    <li class="discrete">Docker and Kubernetes are not for everyone</li>
+                </ol>
+            </section>
+            <section>
+                <h4>Most developers are terrible at devops<br> (and need to improve)</h4>
+                <p class="fragment">Developers ≠ Devops</p>
+            </section>
+            <section>
+                <h4><span class="discrete">Most developers are terrible at devops<br></span> (and need to improve)</h4>
+                <p>Why?</p>
+                <ol>
+                    <li class="fragment">💪 Pragmatic</li>
+                    <li class="fragment">💰 Financial</li>
+                    <li class="fragment">﻿📢 Political</li>
+                </ol>
+            </section>
+            <section>
+                <h4><span class="discrete">Most developers are terrible at devops<br></span> (and need to improve)</h4>
+                <p>Why?</p>
+                <ol>
+                    <li class="discrete">💪 Pragmatic</li>
+                    <li class="discrete">💰 Financial</li>
+                    <li>﻿📢 Political</li>
+                </ol>
+            </section>
+            <section>
+                <h4>Amazon & Google are <i>not</i> our friends</h4>
+                <p class="fragment">Toxic monopoly</p>
+                <p class="fragment">Tax avoidance</p>
+                <p class="fragment">Anti-open source</p>
+            </section>
+            <section>
+                <h4>Amazon & Google are <i>not</i> our friends</h4>
+                <p>Anti-open source</p>
+                <p class="fragment"><a href="https://opendistro.github.io/for-elasticsearch/">https://opendistro.github.io/for-elasticsearch/</a></p>
+                <p class="fragment"><a href="https://opensource.google/docs/using/agpl-policy/">https://opensource.google/docs/using/agpl-policy/</a></p>
+            </section>
+            <section data-background="img/google-opensource.png" data-background-size="contain"></section>
+            <section data-background="img/google-agpl.png" data-background-size="contain"></section>
+            <section>
+                <h4>Amazon & Google are <i>not</i> our friends</h4>
+            </section>
+
+            <!-- Docker and Kubernetes are not for everyone -->
+            <section>
+                <h4>Unpopular opinions</h4>
+                <ol>
+                    <li class="discrete">Good deployments are more important than good code</li>
+                    <li class="discrete">Most developers are terrible at devops (and need to improve)</li>
+                    <li>Docker and Kubernetes are not for everyone</li>
+                </ol>
+            </section>
+            <section data-background="img/yunoswitchtok8s.jpg" data-background-size="contain"></section>
+            <section>
+                <h4>Docker and Kubernetes are not for everyone</h4>
+                <p class="fragment">Switching from native to containers is a drastic change</p>
+                <p class="fragment">Bad deployments get worse with Docker</p>
+                <p class="fragment">K8s manifest files are a PITA <span class="fragment"><br>(Helm is worse)</span></p>
+                <p class="fragment">K8s is opaque</p>
+                <p class="fragment">K8s has a lot of overhead</p>
+                <p class="fragment">There are alternatives to K8s</p>
+            </section>
+            <section>
+                <h4>There are alternatives to K8s</h4>
+                <p>"A cambrian explosion of container orchestrators was created"</p>
+                <iframe width="560" height="315" src="https://www.youtube-nocookie.com/embed/lmGFgZ889kY?start=346" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </section>
+            <section>
+                <h4>There are alternatives to K8s</h4>
+                <p><a href="https://landscape.cncf.io/category=scheduling-orchestration&format=card-mode&grouping=category">https://landscape.cncf.io</a></p>
+            </section>
+            <section data-background="img/cncf-landscape.png" data-background-size="contain"></section>
+            <section>
+                <img src="img/cncf-landscape-orchestration.png">
+                <p><a href="https://landscape.cncf.io/">https://landscape.cncf.io/</a></p>
+            </section>
+
+            <!-- Transition: what's your next move? -->
+            <section>
+                <h2>Now what?</h2>
+            </section>
+            <section>
+                <h2>What's your next move?</h2>
+            </section>
+
+            <!-- Full manual -->
+            <section>
+                <h3>"Full manual"</h3>
+                <pre><code class="sh">ssh user@myserver
+cd /opt/myapp
+git pull
+sudo systemctl restart myapp</code></pre>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check"></i> KISS ("keep it simple stupid")</li>
+                    </ul>
+                </div>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-times"></i> Prone to many errors</li>
+                        <li><i class="fa-li fa fa-times"></i> Works only in teams of 1</li>
+                        <li><i class="fa-li fa fa-times"></i> Incompatible with CD (continuous deployments)</li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h3>"Scripted"</h3>
+                <p>Bash, Make, Maven, Grunt...</p>
+                <pre><code class="sh">ssh user@myserver
+cd /opt/myapp
+./upgrade.sh</code></pre>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check"></i> Repeatable</li>
+                        <li><i class="fa-li fa fa-check"></i> Easy onboarding</li>
+                    </ul>
+                </div>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-times"></i> Hard to get right and fast in the general case (new install, CD, different OS)</li>
+                        <li><i class="fa-li fa fa-times"></i> Lots of bash</li>
+                        <li><i class="fa-li fa fa-times"></i> Servers are precious jewels</li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h3>"Automated"</h3>
+                <p>Ansible, Chef, Puppet, Salt...</p>
+                <pre><code class="sh">ansible-playbook \
+    --limit=staging,production --tags=myapp \
+    ./install.yml</code></pre>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check"></i> Parallel multi-server deployments</li>
+                        <li><i class="fa-li fa fa-check"></i> Pretty fast</li>
+                        <li><i class="fa-li fa fa-check"></i> Horizontal scaling</li>
+                    </ul>
+                </div>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-times"></i> Lots of DSL (domain-specific language)</li>
+                        <li><i class="fa-li fa fa-times"></i> Hard to DNRY (do not repeat yourself)</li>
+                        <li><i class="fa-li fa fa-times"></i> Hard to deploy apps with incompatible requirements</li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h3>"Containerized"</h3>
+                <p>Docker/Podman, docker-compose</p>
+                <pre><code class="sh">ssh user@myserver
+cd /opt/myapp
+docker-compose up -d --build</code></pre>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check"></i> Solves the packaging problem</li>
+                        <li><i class="fa-li fa fa-check"></i> Apps separated from host OS</li>
+                        <li><i class="fa-li fa fa-check"></i> Disposable environments</li>
+                    </ul>
+                </div>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-times"></i> Need to learn the "container way"</li>
+                        <li><i class="fa-li fa fa-times"></i> Overkill for statically-compiled binaries (C/C++, Rust, Go...)</li>
+                        <li><i class="fa-li fa fa-times"></i> Not-so-great at multi-server deployments (iptables, shared volumes, routing...)</li>
+                        <li><i class="fa-li fa fa-times"></i> Manual resource allocation</li>
+                        <li><i class="fa-li fa fa-times"></i> No auto-scaling</li>
+                        <li><i class="fa-li fa fa-times"></i> Scheduling is a hard problem</li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h3>"Cluster-scheduled"</h3>
+                <p>Docker Swarm, Nomad, Mesos, Kubernetes</p>
+                <pre><code class="sh">kubectl apply -f ./infra/</code></pre>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-check"></i> Optimal resource allocation (diagonal scaling)</li>
+                        <li><i class="fa-li fa fa-check"></i> Batteries included: scheduling, service discovery, rollout...</li>
+                        <li><i class="fa-li fa fa-check"></i> Lots of additional tooling</li>
+                    </ul>
+                </div>
+                <div class="half-width fragment small">
+                    <ul class="fa-ul">
+                        <li><i class="fa-li fa fa-times"></i> Steep learning curve (Concepts & DSL)</li>
+                        <li><i class="fa-li fa fa-times"></i> Server overhead</li>
+                        <li><i class="fa-li fa fa-times"></i> Young projects <ul>
+                            <li>Fast-moving environment</li>
+                            <li>Documentation of uneven quality</li>
+                        </ul></li>
+                    </ul>
+                </div>
+            </section>
+            <section>
+                <h2>Now what?</h2>
+            </section>
+
+            <!-- Learn -->
+            <section data-background="img/learn.jpg" data-background-opacity="0.3">
+                <h3>Learn</h3>
+            </section>
+            <!-- <section data-background="img/learn.jpg" data-background-opacity="0.3">
+                <h3>How do <i>you</i> learn?</h3>
+            </section> -->
+            <section data-background="img/learn.jpg" data-background-opacity="0.3">
+                <h3>How do <i>we</i> learn?</h3>
+            </section>
+            <section>
+                <h3>How do we learn?</h3>
+                <table class="no-border small">
+                    <tr>
+                        <td class="half-width"><i class="fa fa-check"></i> Read documentation, source code, blogs, watch videos, attend meetups</td>
+                        <td class="half-width fragment"><i class="fa fa-exclamation-triangle"></i> Passive learning</td>
+                    </tr>
+                    <tr>
+                        <td><i class="fa fa-check"></i> Start with smaller projects</td>
+                        <td class="fragment"><i class="fa fa-exclamation-triangle"></i> No oversight</span></td>
+                    </tr>
+                </table>
+            </section>
+            <section>
+                <img src="img/rubberduck.jpg" alt="" width="500px">
+                <p>Rubber-duck debugging</p>
+            </section>
+            <section>
+                <img src="img/platypus.jpg" alt="" width="500px">
+                <p>Plastic platypus learning</p>
+            </section>
+            <section>
+                <h3>Learning by teaching</h3>
+                <p class="fragment"><i>"Lernen durch lehren"</i></p>
+            </section>
+            <section>
+                <h3>Learning by teaching</h3>
+                <ol>
+                    <li>Prepare notes</li>
+                    <li>Prepare the lesson</li>
+                    <li>Teach the subject (without using the notes)</li>
+                </ol>
+            </section>
+            <section>
+                <h3>Learning by teaching</h3>
+                <p>Tooling: Open edX (<a href="https://open.edx.org">https://open.edx.org</a>)</p>
+                <ul class="fragment">
+                    <li>AGPL software</li>
+                    <li>Python</li>
+                    <li>Modular</li>
+                    <li>Many extension points (API & SDK)</li>
+                </ul>
+            </section>
+            <section>
+                <h3>Open edX</h3>
+                <p>Videos, text, interactive content, forums, peer-graded exercises...</p>
+                <p>Ecommerce, student analytics, custom learning paths...</p>
+            </section>
+            <section data-background="img/edxorg.png" data-background-size="contain" data-background-opacity="0.3">
+                <p><strong>Try it: <a href="https://edx.org">https://edx.org</a></strong></p>
+            </section>
+            <section data-background="img/labxchange.png" data-background-size="contain" data-background-opacity="0.3">
+                <p><strong>Try it: <a href="https://www.labxchange.org/">https://www.labxchange.org/</a></strong></p>
+            </section>
+            <section data-background="img/tutor.png" data-background-size="contain"></section>
+            <section data-background="img/tutor.png" data-background-size="contain" data-background-opacity="0.3">
+                <p>Tutor: docker-based Open edX distribution</p>
+                <p><a href="https://docs.tutor.overhang.io">https://docs.tutor.overhang.io</a></p>
+            </section>
+            
+            <section>
+                <h3>Sidenote: my problem with Tutor</h3>
+                <p>Deploy Open edX on: docker-compose, Kubernetes... <span class="fragment">Nomad?</span> <span class="fragment">native servers?</span></p>
+                <p class="fragment">What's the compatibility layer?</p>
+                <pre class="smallish fragment" style="width: 100%; margin: 20px 0;"><code class="sh">multideploy compose openedx install</code></pre>
+                <pre class="smallish fragment" style="width: 100%; margin: 20px 0;"><code class="sh">multideploy k8s openedx exec mysql "mysqldump mydb > /tmp/mydb.dump"</code></pre>
+            </section>
+            
+            <section>
+                <h3>Links</h3>
+                <ul class="no-bullets text-center">
+                    <li>These slides: <a href="https://regisb.github.io/cncf2020">https://regisb.github.io/cncf2020</a></li>
+                    <li>Introduction to Kubernetes course: <a href="https://www.edx.org/course/introduction-to-kubernetes">edx.org/course/introduction-to-kubernetes</a></li>
+                    <li>Pick your tools: <a href="https://landscape.cncf.io">https://landscape.cncf.io</a></li>
+                    <li>Cluster schedulers (and why you might need them): <a href="https://medium.com/@copyconstruct/schedulers-kubernetes-and-nomad-b0f2e14a896">blog post</a></li>
+                    <li>Launch your Open edX platform with Tutor: <a href="https://docs.tutor.overhang.io">https://docs.tutor.overhang.io</a></li>
+                    <li><strong>Get in touch: <a href="#">regis@behmo.com</a></strong></li>
+                </ul>
+            </section>
+            <!-- Sources:
+                https://endler.dev/2019/maybe-you-dont-need-kubernetes/
+                https://medium.com/@copyconstruct/schedulers-kubernetes-and-nomad-b0f2e14a896
+                https://static.googleusercontent.com/media/research.google.com/en//pubs/archive/43438.pdf
+                https://en.wikipedia.org/wiki/Scheduling_(computing)#SCHEDULER
+                https://en.wikipedia.org/wiki/Learning_by_teaching
+            -->
+        </div>
+    </div>
+
+    <script src="js/reveal.js"></script>
+
+    <script>
+        // More info about config & dependencies:
+        // - https://github.com/hakimel/reveal.js#configuration
+        // - https://github.com/hakimel/reveal.js#dependencies
+        Reveal.initialize({
+            controls: false,
+            history: true,
+            transition: 'fade',
+            dependencies: [{
+                    src: 'plugin/markdown/marked.js'
+                },
+                {
+                    src: 'plugin/markdown/markdown.js'
+                },
+                {
+                    src: 'plugin/notes/notes.js',
+                    async: true
+                },
+                {
+                    src: 'plugin/highlight/highlight.js',
+                    async: true
+                }
+            ]
+        });
+    </script>
+    <script>
+        // rainbowify stuff
+        var rainbowPos = 0;
+        var elements = document.querySelectorAll(".rainbow");
+        for (var index = 0; index < elements.length; index++) {
+            var elt = elements[index];
+            var colors = ["red", "orange", "yellow", "green", "blue", "magenta", "purple"];
+            var content = "";
+            var letters = elt.textContent.split("");
+            for (var i = 0; i < letters.length; i++) {
+                var color = colors[rainbowPos % colors.length];
+                content += "<span style=\"color: " + color + ";\">" + letters[i] + "<\/span>";
+                rainbowPos += 1;
+            }
+            elt.innerHTML = content;
+        }
+    </script>
+</body>
+
+</html>
